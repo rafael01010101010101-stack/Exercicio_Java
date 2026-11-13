@@ -1,9 +1,289 @@
 // scanner é pra ler o que foi inserido pelo usuario
 // scanner pra texto: scanner.nextLine(); inteiro: scanner.nextInt(); float: scanner.nextFloat()
+import java.util.EventListener;
 import java.util.Scanner;
 
 public class exercicios
-{
+{   
+    // classe que vai representa tudo que a lista duplamente ligada vai fazer
+    public static class ListaDupla
+    {
+        // estrutura que representa as variaveis que vai ter na lista
+        class No
+        {
+            String nome;
+            String genero;
+            No anterior; // definindo anterior como ponteiro
+            No next; // definindo next como ponteiro
+
+            // anterior = ponteiro que aponta para o nó anterior
+        }
+
+        // ponteiro que apontam para o começo e fim da lista
+        No head = null;
+        No fim = null;
+
+        // fim = ponteiro que aponta para o ultimo nó da lista
+
+        // metodo para inserir o nome do produto na lista duplamente ligada
+        public void inserir(String nome, String genero)
+        {
+            No novoNo = new No();
+            novoNo.nome = nome;
+            novoNo.genero = genero;
+            // inicialmente o ponteiro que aponta para o proximo e para o anterior começam como nulo
+            novoNo.anterior = null;
+            novoNo.next = null;
+
+            if(head == null)
+            {
+                // se a lista estiver vazia o primeiro nó vai ser o primeiro e ultimo no
+                head = novoNo;
+                fim = novoNo;
+            }
+            else
+            {
+                // novo nó vai ser o proximo nó do ultimo nó no momento
+                fim.next = novoNo;
+                // faz o ultimo nó no momento virar o anterior do novo nó que está sendo inserido
+                novoNo.anterior = fim;
+                // novo nó que está sendo inserido é o ultimo da lista
+                fim = novoNo;
+            }
+            System.out.println("\nNome e gênero inserido com sucesso!");
+            System.out.println("Nome: " + nome + " Gênero: " + genero);
+        }
+
+        // meotodo de buscar nome dos jogos na lista
+        public void buscar(String nome)
+        {
+            // primeiro nó é nulo...
+            if(head == null)
+            {
+                System.out.println("\nA lista está vazia! Insira os nomes e gêneros dos jogos para busca-los...\n");
+                return;
+            }
+
+            // criando ponteiro auxiliar "atual"
+            No atual = head;
+
+            // enquanto o atual for diferente de nulo...
+            while(atual != null)
+            {
+                // comparando o atual com o nome informado...
+                if(atual.nome.equals(nome))
+                {
+                    System.out.println("\nJogo encontrado:");
+                    System.out.println("Nome: " + atual.nome);
+                    System.out.println("Gênero: " + atual.genero);
+                    return;
+                }
+                // passando para o proximo nó...
+                atual = atual.next;
+            }
+            System.out.println("\nNenhum jogo foi encontrado na lista!\n");
+        }
+
+        public void excluir(String nome)
+        {
+            if(head == null)
+            {
+                System.out.println("\nA lista está vazia! Insira Nomes e gêneros de jogos pra exclui-los...\n");
+                return;
+            }
+
+            No atual = head;
+
+            // enquanto o atual for diferente de nulo e o nó atual for diferente do inserido
+            while(atual != null && !atual.nome.equals(nome))
+            {
+                // ele passa pro proximo
+                atual = atual.next;
+            }
+
+            // se for nulo
+            if(atual == null)
+            {
+                // mostra q nd foi encontrado
+                System.out.println("\nNenhum jogo foi encontrado!\n");
+                return;
+            }
+
+            // declarando o nome e o genero excluido para mostrar depois
+            String nomeExcluido = atual.nome;
+            String generoExcluido = atual.genero;
+
+            // se quiser excluir o primeiro nó
+            if(atual == head)
+            {
+                // primeiro vai apontar para o proximo, para o head ser o segundo pois o primeiro vai ser excluido
+                head = atual.next;
+
+                // se tiver alguma coisa no head entao ele aponta o anterior como nulo para excluir
+                if(head != null)
+                {
+                    // define o anterior do head como nulo
+                    head.anterior = null;
+                }
+                else
+                {
+                    // se depois de excluir o head e o head ficar nulo significa que o segundo nó nao existe e a lista ficou vazia, declarando o fim como nulo
+                    fim = null;
+                }
+            }
+            else
+            {
+                // aponta para o anterior do atual, depois para o proximo, depois para o proximo denovo
+                // exemplo: atual = 2, aponta pra 1, depois para o proximo do 1, fazendo o 1 aponta para o 2 e o 2 para o 1
+                // criando assim a lista duplamente ligada
+                atual.anterior.next = atual.next;
+            }
+
+            // se o proximo nó for diferente de nulo...
+            if(atual.next != null)
+            {
+                // vai fazer o inverso do else acima, se o atual for igual a 2 entao ele vai aponta para o 3 e o 3 para ele
+                atual.next.anterior = atual.anterior;
+            }
+            else
+            {
+                // se o proximo nó for nulo entao o anterior vira o ultimo
+                fim = atual.anterior;
+            }
+            System.out.println("\nJogo excluído com sucesso!\n");
+            System.out.println("Nome: " + nomeExcluido);
+            System.out.println("Gênero: " + generoExcluido);
+        }
+    }
+    // classe que vai representar tudo que a lista simples vai fazer
+    public static class Node
+    {
+        // classe que representa a estrutura da lista
+        class Lista
+        {
+            String nome;
+            Lista next; // definindo next como ponteiro
+        }
+
+        // definindo head como ponteiro de Lista e nulo
+        // head = ponteiro que vai apontar para o primeiro nó
+        Lista head = null;
+
+        // metodo de inserir elementos na lista
+        public void inserir(String nome)
+        {
+            // instanciando com o nome novoNo
+            // novoNo = parametro que representa o novo nó que esta sendo inserido
+            Lista novaNo = new Lista();
+            // os elementos recebidos vao para as variaveis dentro da lista
+            novaNo.nome = nome;
+            // proximo nó continua nulo
+            novaNo.next = null;
+
+            // se o head for nulo significa que a lista ta vazia, entao ele recebe o novo nó que foi inserido
+            if(head == null)
+            {
+                head = novaNo;
+            }
+            else
+            {
+                // atual é um ponteiro que vai apontar para o nó atual
+                Lista atual = head;
+
+                // enquando o proximo nó for diferente de nulo ele vai avançando
+                // esse while vai fazer o atual chegar até o ultimo nó
+                while(atual.next != null)
+                {
+                    atual = atual.next;
+                }
+                // quando chegar no ultimo nó ele vai inserir o novo nó no next que esta nulo, ai next vai ser o proximo desse novo no permanecendo nulo
+                atual.next = novaNo;
+            }
+            System.out.println("\nProduto inserido com sucesso: " + nome + "\n");
+        }
+
+        // metodo de consultar os nomes na lista
+        public void buscar(String nome)
+        {
+            // verificando se a lista esta vazia...
+            if(head == null)
+            {
+                System.out.println("\nA lista está vazia! Insira elementos para mostra-los...\n");
+                return;
+            }
+            else
+            {
+                // ponteiro auxiliar atual começando no primeiro nó...
+                Lista atual = head;
+                // enquando o atual for diferente de nulo...
+                while(atual != null)
+                {
+                    // vai comparar os nomes pra ve se sao iguais
+                    //equals() = comparar textos em java
+                    if(atual.nome.equals(nome))
+                    {
+                        System.out.println("\nResultado da busca pelo nome do produto: " + atual.nome + "\n");
+                        return;
+                    }
+                    // enquando o atual nao for nulo ele vai passa para o proximo nó
+                    atual = atual.next;
+                }
+                System.out.println("\nNenhum produto com esse nome foi encontrado!\n");
+            }
+        }
+
+        // metodo excluir algum nome da lista
+        public void excluir(String nome)
+        {
+            if(head == null)
+            {
+                System.out.println("\nA lista está vazia! Insira elementos para exclui-los...\n");
+                return;
+            }
+            else
+            {
+                Lista atual = head;
+
+                if(atual != null)
+                {
+                    // se o primeiro no for excluido o head vai virar o segundo nó
+                    if(atual.nome.equals(nome))
+                    {
+                        // assim
+                        head = atual.next;
+                        return;
+                    }
+                    // criando mais um ponteiro auxiliar, o anterior
+                    // anterior = vai apontar para o nó anterior de atual, ele vai ser usado para nao quebrar a lista
+                    // ex: tenho a lista 1-2-3 e quero excluir o valor 2, 
+                    // tenho q fazer com q o next do 1 seja o 3, com isso o anterior vai apontar para o next do atual, nao quebrando a lista e mantendo a estrutura
+                    Lista anterior = atual;
+                    atual = atual.next;
+
+                    // esse while vai continuar procurando o nome enquanto o atual for diferente de nulo e o nome no atual ser diferente do nome inserido
+                    // ! = singifica negação, entao enquanto o nome do atual NÃO for igual ao nome inserido o laço continua
+                    while(atual != null && !atual.nome.equals(nome))
+                    {
+                        anterior = atual;
+                        atual = atual.next;
+                    }
+
+                    if(atual == null)
+                    {
+                        System.out.println("\nNão foi possivel excluir o nome do produto pois ele nao foi encontrado!\n");
+                        return;
+                    }
+
+                    // declarando o nome excluido para mostrar depois de excluir
+                    String nomeExcluido = atual.nome;
+
+                    anterior.next = atual.next;
+                    System.out.println("\nProduto excluido com sucesso!\n");
+                    System.out.println("Nome: " + nomeExcluido);
+                }
+            }
+        }
+    }
     public static void main(String[] args) 
     {
         Scanner scanner = new Scanner(System.in);
@@ -39,6 +319,8 @@ public class exercicios
             System.out.println("20 - Criando uma matriz 3x2 armazenando a categoria e o nome de um produto!");
             System.out.println("21 - Pedindo 9 números de uma matriz, pedindo para o usuario um número e verificar se ele existe na matriz!");
             System.out.println("22 - Criando uma matriz 3x3 e mostrando so as linhas e depois so as colunas!");
+            System.out.println("23 - Mostrando uma lista ligada simples com nomes de produtos!");
+            System.out.println("24 - Mostrando uma lista duplamente ligada com nomes e gêneros de Jogos!");
             System.out.print("\nEscolha uma das opções acima: ");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -585,6 +867,37 @@ public class exercicios
                     {
                         System.out.println(matriz5[i][coluna] + " ");
                     }
+                    break;
+                case 23:
+                    // criando a instancia de toda a função node com o nome lista
+                    Node lista = new Node();
+                    System.out.println("\nVocê escolheu mostrar uma lista ligada simples com nomes de produtos!\n");
+
+                    // inserindo
+                    lista.inserir("Mouse");
+                    lista.inserir("Teclado");
+                    lista.inserir("Computador");
+
+                    // excluindo
+                    lista.excluir("Teclado");
+
+                    // buscando
+                    lista.buscar("Teclado");
+                    break;
+                case 24:
+                    ListaDupla listaDupla = new ListaDupla();
+                    System.out.println("\nVocê escolheu mostrar uma lista duplamente ligada com nomes e gêneros de jogos!\n");
+
+                    // inserindo
+                    listaDupla.inserir("God of War", "Ação");
+                    listaDupla.inserir("Resident Evil", "Terror");
+                    listaDupla.inserir("Minecraft", "Aventura");
+
+                    // excluindo
+                    listaDupla.excluir("Minecraft");
+
+                    // buscando
+                    listaDupla.buscar("Minecraft");
                     break;
                 default:
                     System.out.println("\nEscolha uma opção válida!\n");
