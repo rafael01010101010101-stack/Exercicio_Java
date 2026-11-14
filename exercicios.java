@@ -5,6 +5,146 @@ import java.util.Scanner;
 
 public class exercicios
 {   
+    // classe que vai representa tudo que a tabela hash vai fazer
+    public static class TabelaHash
+    {
+        // definindo o "TAMANHO" como inteiro e 10 (0 a 9)
+        // final = nao pode ser alterado
+        private static final int TAMANHO = 10;
+
+        // classe que vai representar oque será armazenado na tabela
+        class No
+        {
+            int sala;
+            // next é um ponteiro
+            No next;
+        }
+
+        // definindo o vetor tabela da classe No, do tamanho 10 inteiros (0 a 9)
+        No[] tabela = new No[TAMANHO];
+
+        // criando a função hash para distribuir as salas para seu respectivo indice na tabela
+        public int funcaoHash(int sala)
+        {
+            return sala % TAMANHO;
+        }
+
+        // metodo de inserir
+        public void inserir(int sala)
+        {
+            // indice vai receber o resultado da operação das salas na função hash, distribuindo os valores
+            int indice = funcaoHash(sala);
+
+            // criando a instancia
+            No novoNo = new No();
+
+            // adicionando os dados
+            novoNo.sala = sala;
+            novoNo.next = null;
+
+            // se os indices estiverem sem dados, o novo no vai ocupar
+            if(tabela[indice] == null)
+            {
+                tabela[indice] = novoNo;
+
+            }
+            else
+            {
+                // se nao estiver vazio ele vai pra proximo indice e vai ver se ta vazio, se tiver ele ocupa
+                // esse else trata as colisões
+                novoNo.next = tabela[indice];
+                tabela[indice] = novoNo;
+            }
+
+            System.out.println("\nSala " + sala + " inserida com sucesso!\n");
+        }
+
+        // metodo de busca
+        public void buscar(int sala)
+        {
+            // fazendo o indice receber as salas novamente
+            int indice = funcaoHash(sala);
+
+            // criando ponteiro auxiliar atual para percorrer a tabela ate achar a sala buscada
+            No atual = tabela[indice];
+
+            while(atual != null)
+            {
+                // se a sala informada for igual a sala aonde o ponteiro atual esta, entao mostra
+                if(atual.sala == sala)
+                {
+                    System.out.println("\nSala encontrada: " + atual.sala + "\n");
+                    return;
+                }
+                // se nao for igual ele vai indo pro proximo indice até achar uma sala igual a informada na busca
+                atual = atual.next;
+            }
+            System.out.println("\nA sala" + sala + " não foi encontrada na tabela!\n");
+        }
+
+        // metodo de excluir
+        public void excluir(int sala)
+        {
+            int indice = funcaoHash(sala);
+
+            No atual = tabela[indice];
+            // criando ponteiro "anterior" para manter o nó da lista funcional sem quebrar
+            // anterior começa como nulo pq o primeiro nó não tem anterior nem proximo
+            No anterior = null;
+
+            while(atual != null)
+            {
+                if(atual.sala == sala)
+                {
+                    // se o anterior for igual a nulo entao ele é o primeiro da lista
+                    if(anterior == null)
+                    {
+                        // para manter os nós da lista ligados o atual começa a aponta para o proximo dele
+                        // ex: 1-2-3, 1 deixa de aponta para o 2 podendo ser excluido normalmente
+                        tabela[indice] = atual.next;
+                    }
+                    else
+                    {
+                        // se nao for excluir o primeiro entao executa isso:
+                        // ex: 1-2-3, se eu selecionar o 2 entao o 1 vai apontar para o 3, 
+                        // proximo do anterior nesse caso é 2 e ele vai receber o proximo do 2 sendo o 3
+                        // resultado = 1-3
+                        anterior.next = atual.next;
+                    }
+                    System.out.println("\nSala " + atual.sala + " excluida com sucesso!\n");
+                    return;
+                }
+                // fazendo os ponteiros avançarem enquanto nao acharem a sala informada
+                anterior = atual;
+                atual = atual.next;
+            }
+            System.out.println("\nSala " + sala + " não encontrada na tabela!\n");
+        }
+
+        // metodo de mostra a tabela inteira
+        public void listar()
+        {
+            for(int i = 0; i < TAMANHO; i++)
+            {
+                // atual recebendo a tabela e cada valor é o i
+                // i = indices da tabela
+                No atual = tabela[i];
+
+                // enquanto o atual for diferente de nulo ele vai mostrar os indices da tabela
+                if(atual != null)
+                {
+                    System.out.println("Indice " + i + " : ");
+                }
+
+                // enquanto o atual for diferente de nulo entao vai mostra as salas encontradas
+                while(atual != null)
+                {
+                    System.out.println("Sala " + atual.sala + "\n");
+                    atual = atual.next;
+                }
+            }
+        }
+    }
     // classe que vai representa tudo que a lista duplamente ligada vai fazer
     public static class ListaDupla
     {
@@ -154,6 +294,20 @@ public class exercicios
             System.out.println("Nome: " + nomeExcluido);
             System.out.println("Gênero: " + generoExcluido);
         }
+
+        // metodo para mostrar a lista completa
+        public void listar()
+        {
+            No atual = head;
+
+            while(atual != null)
+            {
+                System.out.println("Nome do jogo: " + atual.nome);
+                System.out.println("Gênero do jogo: " + atual.genero);
+
+                atual = atual.next;
+            }
+        }
     }
     // classe que vai representar tudo que a lista simples vai fazer
     public static class Node
@@ -283,6 +437,18 @@ public class exercicios
                 }
             }
         }
+
+        // metodo de mostrar a lista por completa
+        public void listar()
+        {
+            Lista atual = head;
+
+            while(atual != null)
+            {
+                System.out.println("Nome do produto: " + atual.nome);
+                atual = atual.next;
+            }
+        }
     }
     public static void main(String[] args) 
     {
@@ -321,6 +487,7 @@ public class exercicios
             System.out.println("22 - Criando uma matriz 3x3 e mostrando so as linhas e depois so as colunas!");
             System.out.println("23 - Mostrando uma lista ligada simples com nomes de produtos!");
             System.out.println("24 - Mostrando uma lista duplamente ligada com nomes e gêneros de Jogos!");
+            System.out.println("25 - Criando uma tabela hash com encandeamento separado e adicionando números de salas aos indices!");
             System.out.print("\nEscolha uma das opções acima: ");
             opcao = scanner.nextInt();
             scanner.nextLine();
@@ -874,6 +1041,7 @@ public class exercicios
                     System.out.println("\nVocê escolheu mostrar uma lista ligada simples com nomes de produtos!\n");
 
                     // inserindo
+                    // por ser valores do tipo texto é preciso do ""
                     lista.inserir("Mouse");
                     lista.inserir("Teclado");
                     lista.inserir("Computador");
@@ -883,6 +1051,9 @@ public class exercicios
 
                     // buscando
                     lista.buscar("Teclado");
+
+                    // mostrando tudo
+                    lista.listar();
                     break;
                 case 24:
                     ListaDupla listaDupla = new ListaDupla();
@@ -898,6 +1069,29 @@ public class exercicios
 
                     // buscando
                     listaDupla.buscar("Minecraft");
+
+                    // mostrando tudo
+                    listaDupla.listar();
+                    break;
+                case 25:
+                    TabelaHash tabelaHash = new TabelaHash();
+                    System.out.println("\nVocê escolheu criar uma tabela hash com encandeamento separado adicionando números de salas aos indices!\n");
+
+                    // inserindo
+                    // por ser valores inteiro eles sao inseridos assim sem os "":
+                    tabelaHash.inserir(401);
+                    tabelaHash.inserir(202);
+                    tabelaHash.inserir(300);
+                    tabelaHash.inserir(92);
+
+                    // excluindo
+                    tabelaHash.excluir(401);
+
+                    // buscando uma sala expecifica
+                    tabelaHash.buscar(300);
+
+                    // mostrando a tabela inteira
+                    tabelaHash.listar();
                     break;
                 default:
                     System.out.println("\nEscolha uma opção válida!\n");
